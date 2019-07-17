@@ -8,7 +8,7 @@ pipeline {
                 archiveArtifacts artifacts: 'dist/trainSchedule.zip'
             }
         }
-        stage(DeployToStaging) {
+        stage('DeployToStaging') {
             when {
                 branch 'master'
             }
@@ -21,13 +21,13 @@ pipeline {
                             sshPublisherDesc(
                                 configName: 'staging',
                                 sshCredentials: [
-                                    userName: '$USERNAME',
-                                    encryptedPassphrase: 'USERPASS',
+                                    userName: "$USERNAME",
+                                    encryptedPassphrase: "$USERPASS",
                                 ],
                                 transfers: [
                                     sshTransfer(
                                         sourceFiles: 'dist/trainSchedule.zip',
-                                        removePrifix: 'dist/',
+                                        removePrefix: 'dist/',
                                         remoteDirectory: '/tmp',
                                         execCommand: 'sudo /usr/bin/systemctl stop train-schedule && rm -rf /opt/train-schedule/* && unzip /tmp/trainSchedule.zip -d /opt/train-schedule && sudo /usr/bin/systemctl start train-schedule'
                                     )    
